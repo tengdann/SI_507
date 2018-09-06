@@ -1,8 +1,6 @@
 # SI_507
 Repository storing all assignments for SI 507
 
-Current Folders:
+Table of Contents:
 
-~Homework 1:
-    
-    - ttt.py
+-Homework 1: ttt.py
