@@ -1,7 +1,7 @@
 '''
 SI 507 Fall 2018 Homework 1
 '''
-
+# SSH test comment
 # Create board - Setup the data structure for storing board data
     
 bd = [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ] # Indexed from bottom left; refer to keypad on keyboard 
