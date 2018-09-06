@@ -58,6 +58,7 @@ return: information about current game status
 
 def determine_over(bd):
     # Need to do 9 checks; more elegent method?
+    # Also need to check cells are not empty
     
     # First row matching
     if (' ' not in (bd[0], bd[1], bd[2]) and bd[0] == bd[1] == bd[2]):
