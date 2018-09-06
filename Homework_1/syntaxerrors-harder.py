@@ -19,6 +19,8 @@ authors = {
 
 for author, date in authors.items():
     print ("%s" % (author) + " died in " + "%s." % (date))
+    
+print()
 
 # Calculating Grades
 # Write a program that will average 3 numeric exam grades, return an average test score, a corresponding letter grade, and a message stating whether the student is passing.
@@ -42,14 +44,14 @@ for author, date in authors.items():
 
 exam_one = int(input("Input exam grade one: "))
 
-exam_two = input("Input exam grade two: ")
+exam_two = int(input("Input exam grade two: "))
 
-exam_three = str(input("Input exam grade three: "))
+exam_three = int(input("Input exam grade three: "))
 
 grades = [exam_one, exam_two, exam_three]
 sum = 0
 for grade in grades:
-  sum = sum + int(grade)
+  sum = sum + grade
 
 avg = sum / len(grades)
 
@@ -64,12 +66,13 @@ elif avg <= 69 and avg >= 65:
 else:
     letter_grade = "F"
 
-for grade in grades:
-    print("Exam: " + str(grade))
+print()
+    
+print("Exams: ", end = ''), print(" ".join(str(grade) for grade in grades))
 
-    print("Average: " + str(avg))
+print("Average: " + str(int(avg)))
 
-    print("Grade: " + letter_grade)
+print("Grade: " + letter_grade)
 
 if letter_grade is "F":
     print ("Student is failing.")
