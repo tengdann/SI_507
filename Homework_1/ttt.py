@@ -6,7 +6,7 @@ SI 507 Fall 2018 Homework 1
     
 bd = [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ] # Indexed from bottom left; refer to keypad on keyboard
 
-# For use in determine_game()
+# For use in determine_game(); stores all possible winning triplets
 
 WIN_COMB = [
 (0, 1, 2), # First row
@@ -18,9 +18,6 @@ WIN_COMB = [
 (0, 4, 8), # BR - TL diagonal
 (2, 4, 6)  # BL - TR diagonal
 ]
-
-# Indexes which round (0 - 8)
-count = 0
 
 # Loop until game is over
 
@@ -69,9 +66,9 @@ def player_one_move(bd):
 '''
 REQUIRES: Board data variable
 MODIFIES: Board data
-EFFECTS: Checks if input is between 1 and 9, inclusive
-         Checks if move has not already been done yet
-         Edits board data with the player's move
+EFFECTS: Checks if input is between 1 and 9, inclusive (sub-problem 1)
+         Checks if move has not already been done yet (sub-problem 2)
+         Edits board data with the player's move (sub-problem 3)
 '''
 def player_two_move(bd):
     player_move = int(input("Player 2's move > "))
@@ -89,7 +86,7 @@ def player_two_move(bd):
     # Edits board data w/ player move
     bd[player_move - 1] = 'O'
 
-# Step 5: Print new board
+# Step 5: Print board
 
 # Step 6: Determine if game is over
 '''
