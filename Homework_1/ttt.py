@@ -4,7 +4,18 @@ SI 507 Fall 2018 Homework 1
 # SSH test comment
 # Create board - Setup the data structure for storing board data
     
-bd = [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ] # Indexed from bottom left; refer to keypad on keyboard 
+bd = [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ] # Indexed from bottom left; refer to keypad on keyboard
+
+WIN_COMB = [
+(0, 1, 2), # First row
+(3, 4, 5), # Second row
+(6, 7, 8), # Third row
+(0, 3, 6), # First column
+(1, 4, 7), # Second column
+(2, 5, 8), # Third column
+(0, 4, 8), # BR - TL diagonal
+(2, 4, 6)  # BL - TR diagonal
+] 
     
 print ("Welcome to tic-tac-toe! Moves will correspond to the numeric keypad on your keyboard. Enjoy!")
 
@@ -57,6 +68,19 @@ return: information about current game status
 '''
 
 def determine_over(bd):
+    if (bd.count(' ') == 1):
+        print ("Cat's game, no one wins! :(")
+        return False
+        
+    for a, b, c in WIN_COMB:
+        if bd[a] == bd[b] == bd[c] == 'X':
+            print ("Player 1 wins! Game over!")
+            return False
+        if bd[a] == bd[b] == bd[c] == 'O':
+            print ("Player 2 wins! Game over!")
+            return False
+    
+    return True
     # Need to do 9 checks; more elegent method?
     # Also need to check cells are not empty
     
@@ -107,14 +131,7 @@ def determine_over(bd):
 
     else:
         return True
-    
-    
-def game_over_text(str):
-    if str == 'X':
-        print ("Player 1 wins!")
-    elif str == 'O':
-        print ("Player 2 wins!")
-
+   
 
 # Actual game function                
 
