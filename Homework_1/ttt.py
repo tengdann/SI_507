@@ -6,6 +6,8 @@ SI 507 Fall 2018 Homework 1
     
 bd = [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ] # Indexed from bottom left; refer to keypad on keyboard
 
+# For use in determine_game()
+
 WIN_COMB = [
 (0, 1, 2), # First row
 (3, 4, 5), # Second row
@@ -15,9 +17,10 @@ WIN_COMB = [
 (2, 5, 8), # Third column
 (0, 4, 8), # BR - TL diagonal
 (2, 4, 6)  # BL - TR diagonal
-] 
-    
-print ("Welcome to tic-tac-toe! Moves will correspond to the numeric keypad on your keyboard. Enjoy!")
+]
+
+# Indexes which round (0 - 8)
+count = 0
 
 # Loop until game is over
 
@@ -36,28 +39,57 @@ def print_board(bd):
     print ('-----------')
     print (' ' + bd[0] + ' | ' + bd[1] + ' | ' + bd[2] + ' ')
 
-# Step 2: Player 1 moves; check to see if valid; edits bd
+# Step 2: Player one moves; checks to see move is valid as well
+'''
+REQUIRES: Board data variable
+MODIFIES: Board data
+EFFECTS: Checks if input is between 1 and 9, inclusive
+         Checks if move has not already been done yet
+         Edits board data with the player's move
+'''
 def player_one_move(bd):
     player_move = int(input("Player 1's move > "))
-
+    
+    # Checks if input is numerical value between 1 and 9
+    while 1 <= bd[player_move] <= 9:
+        print ("Sorry, invalid input!")
+        player_move = int(input("Player 1's move > "))
+    
+    # Checks if move has not already been done yet
     while bd[player_move - 1] != ' ':
         print ("Sorry, invalid move!")
         player_move = int(input("Player 1's move > "))
-        
+    
+    # Edits board data w/ player move
     bd[player_move - 1] = 'X'
 
-# Step 3: Print new board, and check if game is over
+# Step 3: Print board, and check if game is over
 
-# Step 4: Player 2 moves; check to see if valid
-def player_two_move(bd):    
+# Step 4: Player 2 moves; checks to see if move is valid
+'''
+REQUIRES: Board data variable
+MODIFIES: Board data
+EFFECTS: Checks if input is between 1 and 9, inclusive
+         Checks if move has not already been done yet
+         Edits board data with the player's move
+'''
+def player_one_move(bd):
     player_move = int(input("Player 2's move > "))
     
+    # Checks if input is numerical value between 1 and 9
+    while 1 <= bd[player_move] <= 9:
+        print ("Sorry, invalid input!")
+        player_move = int(input("Player 2's move > "))
+    
+    # Checks if move has not already been done yet
     while bd[player_move - 1] != ' ':
         print ("Sorry, invalid move!")
         player_move = int(input("Player 2's move > "))
-
+    
+    # Edits board data w/ player move
     bd[player_move - 1] = 'O'
-# Step 5: Print new board, and check if game is over
+
+# Step 5: Print new board
 
 # Step 6: Determine if game is over
 '''
@@ -67,11 +99,7 @@ parameter: bd - current board data
 return: information about current game status
 '''
 
-def determine_over(bd):
-    if (bd.count(' ') == 1):
-        print ("Cat's game, no one wins! :(")
-        return False
-        
+def determine_over(bd):        
     for a, b, c in WIN_COMB:
         if bd[a] == bd[b] == bd[c] == 'X':
             print ("Player 1 wins! Game over!")
@@ -79,59 +107,12 @@ def determine_over(bd):
         if bd[a] == bd[b] == bd[c] == 'O':
             print ("Player 2 wins! Game over!")
             return False
+
+    if (bd.count(' ') == 1):
+        print ("Cat's game, no one wins! :(")
+        return False
     
     return True
-    # Need to do 9 checks; more elegent method?
-    # Also need to check cells are not empty
-    
-    # First row matching
-    if (' ' not in (bd[0], bd[1], bd[2]) and bd[0] == bd[1] == bd[2]):
-        game_over_text(bd[1])
-        return False
-        
-    # Second row matching
-    elif (' ' not in (bd[3], bd[4], bd[5]) and bd[3] == bd[4] == bd[5]):
-        game_over_text(bd[4])
-        return False
-        
-    # Third row matching
-    elif (' ' not in (bd[6], bd[7], bd[8]) and bd[6] == bd[7] == bd[8]):
-        game_over_text(bd[7])
-        return False
-        
-    # First column matching
-    elif (' ' not in (bd[0], bd[3], bd[6]) and bd[0] == bd[3] == bd[6]):
-        game_over_text(bd[3])
-        return False
-        
-    # Second column matching
-    elif (' ' not in (bd[1], bd[4], bd[7]) and bd[1] == bd[4] == bd[7]):
-        game_over_text(bd[4])
-        return False
-        
-    # Third column matching
-    elif (' ' not in (bd[2], bd[5], bd[8]) and bd[2] == bd[5] == bd[8]):
-        game_over_text(bd[5])
-        return False
-        
-    # TL-BR diagonal matching
-    elif (' ' not in (bd[6], bd[4], bd[2]) and bd[6] == bd[4] == bd[2]):
-        game_over_text(bd[4])
-        return False
-        
-    # TR-BL diagonal matching
-    elif (' ' not in (bd[8], bd[4], bd[0]) and bd[8] == bd[4] == bd[0]):
-        game_over_text(bd[4])
-        return False
-        
-    # Cat's game
-    elif bd.count(' ') == 1:
-        print("Cat's game! No one wins :(")
-        return False
-
-    else:
-        return True
-   
 
 # Actual game function                
 
