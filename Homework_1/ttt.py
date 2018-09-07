@@ -51,7 +51,7 @@ def player_one_move(bd):
     player_move = int(input("Player 1's move > "))
     
     # Checks if input is numerical value between 1 and 9
-    while 1 <= bd[player_move] <= 9:
+    while player_move < 1 or player_move > 9:
         print ("Sorry, invalid input!")
         player_move = int(input("Player 1's move > "))
     
@@ -73,11 +73,11 @@ EFFECTS: Checks if input is between 1 and 9, inclusive
          Checks if move has not already been done yet
          Edits board data with the player's move
 '''
-def player_one_move(bd):
+def player_two_move(bd):
     player_move = int(input("Player 2's move > "))
     
     # Checks if input is numerical value between 1 and 9
-    while 1 <= bd[player_move] <= 9:
+    while player_move < 1 or player_move > 9:
         print ("Sorry, invalid input!")
         player_move = int(input("Player 2's move > "))
     
@@ -108,7 +108,7 @@ def determine_over(bd):
             print ("Player 2 wins! Game over!")
             return False
 
-    if (bd.count(' ') == 1):
+    if (bd.count(' ') == 0):
         print ("Cat's game, no one wins! :(")
         return False
     
