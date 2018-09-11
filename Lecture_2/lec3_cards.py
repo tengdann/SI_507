@@ -143,6 +143,7 @@ class TestDeck(unittest.TestCase):
         deck = Deck()
         card = deck.pop_card()
         self.assertEqual(deck.size(), 51)
+        self.assertEqual(str(card), "King of Spades")
         
     def test_shuffle(self):
         deck = Deck()
