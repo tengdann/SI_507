@@ -1,0 +1,52 @@
+The Python file lec3_cards.py contains code that ought to do the following.
+
+Note that this description covers what the code SHOULD do. It may be very slightly off! You'll want to test that it really does do all of this stuff as described.
+
+* A class Card
+	* The class Card should always have 3 class variables: suit_names, rank_levels, and faces
+	* suit_names should contain a list of strings that represent suits: Diamonds, Clubs, Hearts, Spades
+	* rank_levels should contain a list of integers, 1-13
+	* faces should contain a dictionary whose keys are numbers and whose values are strings. It should have the following key-value pairs:
+		* 1:"Ace"
+		* 11:"Jack"
+		* 12:"Queen"
+		* 13:"King"
+
+	* The class Card's constructor should accept a number representing a suit and a number representing a rank. You can assume that no one should ever put in a number that is an invalid suit (less than zero or greater than 3) or an invalid rank (less than zero or greater than 13). The default value for a suit in the Card constructor (variable name *suit*) is 0, for Diamonds, and the default value for the rank in the Card constructor (variable name *rank*) is 2.
+
+	* The Card constructor should assign the following instance variables:
+		* self.suit, to hold the string name representing the suit of the card
+		* self.rank, to hold EITHER the number or the string representation as appropriate of the card rank (so if a card is created with rank 12, its self.rank should be "Queen", etc)
+		* self.rank_num, to hold the NUMBER representing the rank (this value should always be an integer)
+
+	* The Card class has a string method, which should return a string e.g. "Ace of Spades" or "3 of Clubs", etc.
+
+
+* A class Deck
+	* The class Deck's constructor does not accept input, and you can assume this will always be handled correctly by a programmer using this code.
+
+	* The Deck constructor builds a list of cards -- all the cards that would be included in a 52-card deck: rank 1-13 of each of the four suits.
+
+	* The Deck constructor creates one instance variable: self.cards, which should hold a list of Card objects when a Deck instance is created.
+
+	* The Deck string method should return a multi-line string with one line for each printed representation of a card in the deck. So a complete deck should have a 52-line string of strings like "Ace of Diamonds", "Two of Diamonds", etc.
+
+	* Deck has a method pop_card which accepts an integer as input and has a default value such that the Deck will pop off the last (top) card of the deck, as if you're taking off the top card in a card game. When pop_card is invoked on a Deck instance, the last card in the deck is removed from the deck. You should be able to "pop" all of the cards off of the deck until the deck is empty (its self.cards list is the empty list).
+
+	* Deck has a method shuffle which accepts no external input and shuffles the self.cards list in the Deck at that time so that it has a random order.
+
+	* Deck has a method replace_card which accepts a Card instance as input. If the card instance input into the method is NOT already in the deck, it is added back to the deck. If it IS already in the deck, nothing changes about the Deck (a deck should not have any duplicate cards as a result of calling this method).
+
+	* Deck has a method sort_cards which should organize the cards remaining in the deck into an order such that they are in ascending order by suit: Diamonds, then Clubs, then Hearts, then Spades.
+
+	* Deck has a method deal_hand which takes a required input hand_size, an integer representing the number of cars in the hand. It should return a list of Card objects that make up the hand dealt. A hand should be able to be dealt up to the full size of the current deck (e.g. if 3 cards have been removed from the deck and not replaced, it should be impossible to deal a 52-card hand, but if no cards have been removed, it should be possible)
+
+
+* A function play_war_game
+
+	* The function has one keyword parameter *testing*, whose default value is False. When the function is called with testing=True, the function does not make any print statements, making it easier to see tests.
+		* (NOTE: You do not have to test this -- it is difficult to test print statements, because print is for people! However, when testing this function, you should ALWAYS invoke it with testing=True and NEVER with the default value, or the tests will be very difficult ot read.)
+
+	* The play_war_game function should initialize two Deck instances, representing Player 1 and Player 2, inside its function scope and simulate a variation on the card game of War (http://www.bicyclecards.com/how-to-play/war/). This happens with no external input. There are 3 possible outcomes: the Player1 score is larger than the Player2 score and Player1 wins, the Player2 score is larger than the Player1 score and Player2 wins, or the two scores are the same and there is a tie.
+
+	* The play_war_game function should always return a tuple of a string and two integers, where the string is either "Player1", "Player2", or "Tie", and the integers represent the Player1 score and the Player2 score, respectively.
