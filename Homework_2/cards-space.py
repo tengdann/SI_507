@@ -213,6 +213,15 @@ class TestWar(unittest.TestCase):
                 tie_seen = True
             else:
                 fail()
+                
+            '''
+            A bug is exposed in card constructor here:
+            When a face rank is inputted, self.rank_num is not set for those cards
+            Thus, when rank_num is called in play_war_game, an error is thrown
+            since rank_num hasn't been initialized for face cards
+            
+            To fix, line 26 should be moved outside of the if/else statement
+            '''
 
 
 #############
