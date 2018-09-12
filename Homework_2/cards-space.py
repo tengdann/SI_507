@@ -5,7 +5,7 @@ import unittest
 # Homework 2 - Code
 
 ##COMMENT YOUR CODE WITH:
-# Section Day/Time:
+# Section Day/Time: 003 Wed 1000 - 1130
 # People you worked with:
 
 ######### DO NOT CHANGE PROVIDED CODE #########
@@ -23,7 +23,7 @@ class Card(object):
             self.rank = self.faces[rank]
         else:
             self.rank = rank
-        self.rank_num = rank # To handle winning comparison
+            self.rank_num = rank # To handle winning comparison
 
     def __str__(self):
         return "{} of {}".format(self.rank,self.suit)
@@ -108,13 +108,13 @@ def play_war_game(testing=False):
     else:
         return "Tie", p1_score, p2_score
 
-if __name__ == "__main__":
-    result = play_war_game()
-    print("""\n\n******\nTOTAL SCORES:\nPlayer 1: {}\nPlayer 2: {}\n\n""".format(result[1],result[2]))
-    if result[0] != "Tie":
-        print(result[0], "wins")
-    else:
-        print("TIE!")
+# if __name__ == "__main__":
+    # result = play_war_game()
+    # print("""\n\n******\nTOTAL SCORES:\nPlayer 1: {}\nPlayer 2: {}\n\n""".format(result[1],result[2]))
+    # if result[0] != "Tie":
+        # print(result[0], "wins")
+    # else:
+        # print("TIE!")
 
 
 ######### DO NOT CHANGE CODE ABOVE THIS LINE #########
@@ -137,13 +137,82 @@ if __name__ == "__main__":
 ### Write unit tests below this line for the cards code above.
 
 class TestCard(unittest.TestCase):
-
-
-    # this is a "test"
-    def test_create(self):
+    def test_card_create(self):
         card = Card()
         self.assertEqual(card.suit, "Diamonds")
         self.assertEqual(card.rank, 2)
+        
+        card2 = Card(rank = 12)
+        self.assertEqual(card2.rank, "Queen")
+        
+        card3 = Card(suit = 1)
+        self.assertEqual(card3.suit, "Clubs")
+        
+    def test_card_string(self):
+        card = Card(suit = 3, rank = 13)
+        self.assertEqual(str(card), "King of Spades")
+             
+class TestDeck(unittest.TestCase):
+    def test_deck_create(self):
+        deck = Deck()
+        self.assertEqual(len(deck.cards), 52)
+        
+    def test_deck_pop(self):
+        deck = Deck()
+        card = deck.pop_card()
+        self.assertEqual(type(card), type(Card()))
+        self.assertEqual(len(deck.cards), 51)
+        
+    def test_deck_replace(self):
+        # Replacing card that was taken out
+        deck = Deck()
+        card = deck.pop_card()
+        self.assertEqual(len(deck.cards), 51)
+        deck.replace_card(card)
+        self.assertEqual(len(deck.cards), 52)
+        
+        # Should not replace card that already exists
+        deck.replace_card(card)
+        self.assertEqual(len(deck.cards), 52)
+        
+    # Additional test: test to see if deck shuffle() actually shuffles deck
+    def test_shuffe(self):
+        deck = Deck()
+        deck2 = Deck()
+        
+        deck.shuffle()
+        self.assertFalse(str(deck) == str(deck2))
+        
+class TestWar(unittest.TestCase):
+    def test_play_war(self):
+        passed = 0
+        player1_seen = False
+        player2_seen = False
+        tie_seen = False
+        
+        while passed != 3:
+            result = play_war_game(testing = True)
+            
+            '''
+            The if statements compare the first elemnt of the tuple to a string,
+            as well as checking if that victory condition has been tested
+            
+            If that passes, then it tests if the tuple has 3 elements
+            '''
+            if result[0] == "Player1" and not player1_seen:
+                self.assertEqual(len(result), 3)
+                passed += 1
+                player1_seen = True
+            elif result[0] == "Player2" and not player2_seen:
+                self.assertEqual(len(result), 3)
+                passed += 1
+                player2_seen = True
+            elif result[0] == "Tie" and not tie_seen:
+                self.assertEqual(len(result), 3)
+                passed += 1
+                tie_seen = True
+            else:
+                fail()
 
 
 #############
