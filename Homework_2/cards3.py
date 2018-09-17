@@ -117,17 +117,12 @@ class Hand(object):
     
     # Looks through hand, removing pairs of cards (rank, as per poker definition of pair)
     def remove_pairs(self):
-        hand_ranks = []
+        # Time for some recursions
+        self.hand.sort(key = for card in self.hand: card.rank_num)
         
-        for card in self.hand:
-            hand_ranks.append((card.rank, self.hand.index(card)))
-        
-        # Itemgetter use taken from https://stackoverflow.com/questions/3121979/how-to-sort-list-tuple-of-lists-tuples
-        # Need to sort hand_ranks by first index of the (rank, index) tuple
-        hand_ranks.sort(key = itemgetter(0))
-        
-        self.hand.pop(hand_ranks[0][1])
-        self.hand.pop(hand_ranks[0][1])
+        if self.hand[0].rank_num == self.hand[1].rank_num:
+            self.remove_card(hand[0])
+            self.remove_card(hand[0])
         
         
         
