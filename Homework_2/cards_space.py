@@ -6,7 +6,7 @@ import unittest
 
 ##COMMENT YOUR CODE WITH:
 # Section Day/Time: 003 Wed 1000 - 1130
-# People you worked with:
+# People you worked with: No one
 
 ######### DO NOT CHANGE PROVIDED CODE #########
 ### Scroll down for assignment instructions.
