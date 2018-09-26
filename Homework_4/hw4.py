@@ -146,7 +146,7 @@ class Dog(Pet):
         
     def __str__(self):
         state = super().__str__()
-        state.replace('.', 'arrrf!')
+        state.replace('.', ', arrrf!')
         return state
         
 class Cat(Pet):

@@ -16,6 +16,28 @@ Function advance_day(num_days)
 
 class Library():
     def __init__(self):
+        self.whole_cat = []
+        self.current_cat = []
+        self.out = []
+        self.overdue = []
+        
+class User():
+    def __init__(self):
+        self.current_items = []
+        self.overdue_items = []
+        
+    def check_status(self):
+        if len(self.current_items) > 0:
+            print("You have checked out these items:")
+            for item in self.current_items: print(item)
+        else:
+            print("You have overdue items, or no items checked out.")
+            
+        if len(self.overdue_items) > ):
+            print("These items are overdue:")
+            for item in self.overdue_items: print(item)
+        else:
+            print("You have no overdue items! You are a responsible citizen of the Protectorate!")
 
 class Media():
     def __init__(self, name = "No stored name", max_days = 0, checkout_status = False):
@@ -31,7 +53,30 @@ class Media():
         else:
             return info + " not checked out. It can be checked out for " + str(self.max_days) + " day(s) total."
             
+def check_overdue(Library):
+    for item in Library.out:
+        if item.days_remaining < 0:
+            print(item.name, "is overdue!")
+            
+            Library.out.pop(item)
+            Library.overdue.append(item)
+    
+def checkout(Library, Item):
+    if Item not in Library.current_cat:
+        if Item not in Library.whole_cat:
+            print("Sorry, this item is not in the library.")
+        else:
+            print(Item)
+    else:
+        
+    
+def return_item(Library, Item):
+    pass
 
+def advance_day(Library, num_days):
+    pass
+            
+            
 class MediaTest(unittest.TestCase):
     def testinit(self):
         media = Media()
