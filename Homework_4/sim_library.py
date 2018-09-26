@@ -1,19 +1,5 @@
 import unittest
 
-'''
-Main class Media
-- max_days, days_remaining, name, checkout_status
-Subclass Book
-Subclass Encyclopedia
-Subclass Archival
-Subclass Movies
-Subclass Software
-Function overdue(object)
-Function checkout(object)
-Function return_item(object)
-Function advance_day(num_days)
-'''
-
 class Library():
     def __init__(self):
         self.whole_cat = []
@@ -61,17 +47,20 @@ def check_overdue(Library):
             Library.out.pop(item)
             Library.overdue.append(item)
     
-def checkout(Library, Item):
+def checkout(Library, Item, User):
     if Item not in Library.current_cat:
         if Item not in Library.whole_cat:
             print("Sorry, this item is not in the library.")
         else:
             print(Item)
     else:
-        
+        Library.current_cat.pop(Item)
+        Library.out.append(Item)
+        User.current_items.append(Item)
+        Item.checkout_status = True
     
-def return_item(Library, Item):
-    pass
+def return_item(Library, Item, User):
+    if Item not in User.current_items:
 
 def advance_day(Library, num_days):
     pass
