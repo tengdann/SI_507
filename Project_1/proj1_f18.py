@@ -11,26 +11,28 @@ class Media:
         return 0
         
 class Song(Media):
-    def __init__(self, title, author, year, album = "No album", genre = "No genre", track_length = 0):
+    def __init__(self, title = "No Title", author = "No Author", 
+                year = "No Year", album = "No Album", genre = "No Genre", track_length = 0):
         super().__init__(title, author, year)
         self.album = album
         self.genre = genre
         self.track_length = track_length
         
     def __str__(self):
-        super().__str__() + ' [%s]' % self.genre
+        return super().__str__() + ' [%s]' % self.genre
         
     def __len__(self):
         return self.track_length
         
 class Movie(Media):
-    def __init__(self, title, author, year, rating = "No rating", movie_length = 0):
+    def __init__(self, title = "No Title", author = "No Author", 
+                year = "No Year", rating = "No Rating", movie_length = 0):
         super().__init__(title, author, year)
         self.rating = rating
         self.movie_length = movie_length
         
     def __str__(self):
-        super().__str__() + ' [%s]' % self.rating
+        return super().__str__() + ' [%s]' % self.rating
         
     def __len__(self):
         return self.movie_length
