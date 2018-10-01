@@ -2,7 +2,6 @@ import unittest
 import proj1_f18 as proj1
 
 class TestMedia(unittest.TestCase):
-
     def testConstructor(self):
         m1 = proj1.Media()
         m2 = proj1.Media("1999", "Prince")
@@ -37,6 +36,16 @@ class TestMedia(unittest.TestCase):
         self.assertEqual(len(m1), 0)
         self.assertEqual(len(m2), 0)
         self.assertEqual(len(m3), 0)
+        
+class TestSong(unittest.TestCase):
+    def testConstructor(self):
+        pass
+    
+    def teststr(self):
+        pass
+        
+    def testlen(self):
+        pass
 
 
 unittest.main()
