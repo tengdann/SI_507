@@ -166,4 +166,18 @@ class TestJson(unittest.TestCase):
         self.assertEqual(str(mv1), "Jaws by Steven Spielberg (1975) [PG]")
         self.assertEqual(len(mv1), 7451455)
 
+class TestItunes(unittest.TestCase):
+    def test_tester(self):
+        list1 = proj1.create_media_types_from_itunes("baby", 10)
+        list2 = proj1.create_media_types_from_itunes("moana", 10)
+        list3 = proj1.create_media_types_from_itunes("!@#$%", 10)
+        
+        self.assertTrue(len(list1) > 0 and len(list1) <= 10)
+        for thing in list1:
+            self.assertEqual(type(thing), type(proj1.Song()))
+            
+        self.assertTrue(len(list2) > 0 and len(list2) <= 10)
+        
+        self.assertTrue(len(list3) == 0) # Need to figure out what to do when json returns no data
+        
 unittest.main(verbosity = 2)
