@@ -6,10 +6,10 @@ base_itunes_url = "https://itunes.apple.com/search?"
 # Caching code
 CACHE_FNAME = "itunes_cache.json"
 try:
-    cache_file = open(CACHE_FNAME,'r')
-    cache_contents = cache_file.read()
-    CACHE_DICTION = json.loads(cache_contents)
-    cache_file.close()
+    with open(CACHE_FNAME,'r') as cache_file:
+        cache_contents = cache_file.read()
+        CACHE_DICTION = json.loads(cache_contents)
+        
 except:
     CACHE_DICTION = {}
     

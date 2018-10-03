@@ -3,9 +3,8 @@ import json
 import sys
 import requests
 import secret_data # file that contains OAuth credentials
-# Uncomment following two lines after you install nltk
-# import nltk 
-# from nltk.corpus import stopwords
+import nltk 
+from nltk.corpus import stopwords
 
 ## SI 507 - HW5
 ## COMMENT WITH:
@@ -29,10 +28,57 @@ requests.get(url, auth=auth)
 
 #Write your code below:
 #Code for Part 1:Get Tweets
+def get_from_twitter_with_cache(baseurl = 'https://api.twitter.com/1.1/statuses/user_timeline.json?', params = {}):
+    tweet_list = []
+    params['screen_name'] = username
+    params['count'] = num_tweets
+    unique_ident = params_unique_comb(baseurl, params)
+    
+    if unique_ident in CACHE_DICTION:
+        print("Getting cached data...")
+        for tweet in CACHE_DICTION[unique_ident]:
+            tweet_list.append(tweet['text'])
+        return tweet_list
+        
+    else:
+        print("Making a request for new data...")
+        # Make the request and cache the new data
+        resp = requests.get(baseurl, params, auth = auth)
+        CACHE_DICTION[unique_ident] = json.loads(resp.text)
+        dumped_json_cache = json.dumps(CACHE_DICTION, indent = 4)
+        fw = open(CACHE_FNAME, "w")
+        fw.write(dumped_json_cache)
+        fw.close()
+        for tweet in CACHE_DICTION[unique_ident]:
+            tweet_list.append(tweet['text'])
+        return tweet_list
 
 #Code for Part 2:Analyze Tweets
+def analyze_tweets(list_tweets):
+    tokens = []
+    for tweet in list_tweets:
+        tokens.append(nltk.word_tokenize(tweet))
+        
+    stop_words = set(nltk.corpus.stopwords.words('english'))
 
 #Code for Part 3:Caching
+CACHE_FNAME = "twitter_cache.json"
+try:
+    with open(CACHE_FNAME,'r') as cache_file:
+        cache_contents = cache_file.read()
+        CACHE_DICTION = json.loads(cache_contents)
+        
+except:
+    CACHE_DICTION = {}
+    
+def params_unique_comb(baseurl, params):
+    alphabetized_keys = sorted(params.keys())
+    res = []
+    
+    for k in alphabetized_keys:
+        res.append("{}-{}".format(k, params[k]))
+    
+    return baseurl +"_"+"_".join(res)
 
 if __name__ == "__main__":
     if not consumer_key or not consumer_secret:
@@ -41,3 +87,5 @@ if __name__ == "__main__":
     if not access_token or not access_secret:
         print("You need to fill in this API's specific OAuth URLs in this file.")
         exit()
+        
+    tweet_list = get_from_twitter_with_cache()
