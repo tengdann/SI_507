@@ -5,6 +5,8 @@ import requests
 import secret_data # file that contains OAuth credentials
 import nltk 
 from nltk.corpus import stopwords
+import codecs
+sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer)
 
 ## SI 507 - HW5
 ## COMMENT WITH:
@@ -46,7 +48,7 @@ def get_from_twitter_with_cache(baseurl = 'https://api.twitter.com/1.1/statuses/
         resp = requests.get(baseurl, params, auth = auth)
         CACHE_DICTION[unique_ident] = json.loads(resp.text)
         dumped_json_cache = json.dumps(CACHE_DICTION, indent = 4)
-        fw = open(CACHE_FNAME, "w")
+        fw = open(CACHE_FNAME, "w", encoding = "utf-8")
         fw.write(dumped_json_cache)
         fw.close()
         for tweet in CACHE_DICTION[unique_ident]:
@@ -57,9 +59,28 @@ def get_from_twitter_with_cache(baseurl = 'https://api.twitter.com/1.1/statuses/
 def analyze_tweets(list_tweets):
     tokens = []
     for tweet in list_tweets:
-        tokens.append(nltk.word_tokenize(tweet))
-        
-    stop_words = set(nltk.corpus.stopwords.words('english'))
+        tokenized = nltk.word_tokenize(tweet)
+        for token in tokenized:
+            tokens.append(token)
+            
+    # FreqDist example taken from https://github.com/tistre/nltk-examples/blob/master/freqdist_top_words.py
+    stop_words = set(nltk.corpus.stopwords.words('english')) # These are lowercase
+    letters = "abcdefghijklmnoqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    exclusion_terms = ['http', 'https', 'RT']
+    
+    tokens = [token for token in tokens if token[0] in letters]
+    tokens = [token for token in tokens if token not in exclusion_terms]
+    
+    tokens = [token.lower() for token in tokens]
+    tokens = [token for token in tokens if token not in stop_words]
+    
+    fdist = nltk.FreqDist(tokens)
+    print('USER:', username.upper())
+    print('TWEETS ANALYZED:', num_tweets)
+    print('5 MOST FREQUENT TWEETS:', end = ' ')
+    
+    for word, frequency in fdist.most_common(5):
+        print(u'{}({})'.format(word, frequency), end = ' ')
 
 #Code for Part 3:Caching
 CACHE_FNAME = "twitter_cache.json"
@@ -88,4 +109,5 @@ if __name__ == "__main__":
         print("You need to fill in this API's specific OAuth URLs in this file.")
         exit()
         
-    tweet_list = get_from_twitter_with_cache()
+    analyze_tweets(get_from_twitter_with_cache())
+
