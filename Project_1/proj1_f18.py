@@ -33,17 +33,21 @@ def make_request_using_cache(baseurl, params):
         print("Making a request for new data...")
         # Make the request and cache the new data
         resp = requests.get(baseurl, params)
-        CACHE_DICTION[unique_ident] = json.loads(resp.text)
-        dumped_json_cache = json.dumps(CACHE_DICTION)
-        fw = open(CACHE_FNAME, "w")
-        fw.write(dumped_json_cache)
-        fw.close()
-        return CACHE_DICTION[unique_ident]
+        try:
+            CACHE_DICTION[unique_ident] = json.loads(resp.text)
+            dumped_json_cache = json.dumps(CACHE_DICTION, indent = 4)
+            fw = open(CACHE_FNAME, "w")
+            fw.write(dumped_json_cache)
+            fw.close()
+            return CACHE_DICTION[unique_ident]
+        except:
+            print("Error, search term returned NullResponse")
+            return
         
 def get_requests_from_itunes(param1_type = None, param1_term = None, param2_type = None, param2_term = None, param3_type = None, param3_term = None):
     params_diction = {}
     if param1_type is not None and param1_term is not None:
-        params_diction[param1_type] = param1_term
+        params_diction[param1_type] = param1_term.replace(' ', '+')
         
     if param2_type is not None and param2_term is not None:
         params_diction[param2_type] = param2_term
@@ -55,25 +59,28 @@ def get_requests_from_itunes(param1_type = None, param1_term = None, param2_type
 
 # Default param1_type = term, param2_type = limit, param3_type = None
 # Returns a list of media types
-def create_media_types_from_itunes(param1_term, param2_term):
+def create_media_types_from_itunes(param1_term = None, param2_term = None):
     returned_medias = []
-    json_request = get_requests_from_itunes(param1_type = "term", param1_term = param1_term.replace(' ', '+'), param2_type = "limit", param2_term = param2_term)
+    json_request = get_requests_from_itunes(param1_type = "term", param1_term = param1_term, param2_type = "limit", param2_term = param2_term)
     
-    for single_request in json_request['results']:
-        try:
-            if single_request['kind'] == "song":
-                returned_medias.append(Song(json = single_request))
-            elif single_request['kind'] == "featured-movie":
-                returned_medias.append(Movie(json = single_request))
-            else:
+    try:
+        for single_request in json_request['results']:
+            try:
+                if single_request['kind'] == "song":
+                    returned_medias.append(Song(json = single_request))
+                elif single_request['kind'] == "feature-movie":
+                    returned_medias.append(Movie(json = single_request))
+                else: # In case its like a music-video or something...
+                    returned_medias.append(Media(json = single_request))
+            except:
                 returned_medias.append(Media(json = single_request))
-        except:
-            pass
+    except:
+        pass
 
     return returned_medias
     
 class Media:
-    def __init__(self, title="No Title", author="No Author", year = "No Year", json = None):
+    def __init__(self, title = "No Title", author = "No Author", year = "No Year", json = None):
         if json is None:
             self.title = title
             self.author = author
@@ -132,5 +139,54 @@ class Movie(Media):
         return self.movie_length # Return to the nearest millisecond, as per JSON file
 
 if __name__ == "__main__":
-    # your control code for Part 4 (interactive search) should go here
+    term = input("Enter a search term, or \"quit\" to quit: ")
+    while term != "quit":
+        index = 1
+        master_list = create_media_types_from_itunes(param1_term = term)
+        indexed_list = []
+        song_list = []
+        movie_list = []
+        other_list = []
+        if len(master_list) != 0:
+            for item in master_list:
+                if type(item) == type(Song()):
+                    song_list.append(item)
+                elif type(item) == type(Movie()):
+                    movie_list.append(item)
+                else:
+                    other_list.append(item)
+            
+            if len(song_list) != 0:
+                print("SONGS")
+                for song in song_list:
+                    print(index, song)
+                    index += 1
+                    indexed_list.append(song)
+                print()
+            else:
+                print("No song found!"), print()
+            
+            if len(movie_list) != 0:
+                print("MOVIES")
+                for movie in movie_list:
+                    print(index, movie)
+                    index += 1
+                    indexed_list.append(movie)
+                print()
+            else:
+                print("No movies found!"), print()
+            
+            if len(other_list) != 0:
+                print("OTHER MEDIA")
+                for other in other_list:
+                    print(index, other)
+                    index += 1
+                    indexed_list.append(other)
+                print()
+            else:
+                print("No other media types found!"), print()
+        
+        print(indexed_list)
+        term = input("Enter a number for more info, or another search term, or quit: ")
+        
     pass

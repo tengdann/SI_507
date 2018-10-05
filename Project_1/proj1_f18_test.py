@@ -3,7 +3,7 @@ import proj1_f18 as proj1
 import json
 
 class TestMedia(unittest.TestCase):
-    def test_Mediaa_Constructor(self):
+    def test_Media_Constructor(self):
         m1 = proj1.Media()
         m2 = proj1.Media("1999", "Prince")
         m3 = proj1.Media("Kamikaze", "Eminem", 2018)
@@ -171,13 +171,17 @@ class TestItunes(unittest.TestCase):
         list1 = proj1.create_media_types_from_itunes("baby", 10)
         list2 = proj1.create_media_types_from_itunes("moana", 10)
         list3 = proj1.create_media_types_from_itunes("!@#$%", 10)
+        list4 = proj1.create_media_types_from_itunes()
         
         self.assertTrue(len(list1) > 0 and len(list1) <= 10)
         for thing in list1:
             self.assertEqual(type(thing), type(proj1.Song()))
             
         self.assertTrue(len(list2) > 0 and len(list2) <= 10)
+        self.assertEqual(type(list2[2]), type(proj1.Movie()))
         
         self.assertTrue(len(list3) == 0) # Need to figure out what to do when json returns no data
+        
+        self.assertTrue(len(list4) == 0)
         
 unittest.main(verbosity = 2)
