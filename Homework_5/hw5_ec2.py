@@ -29,13 +29,14 @@ requests.get(url, auth=auth)
 #Code for OAuth ends
 
 CACHE_FNAME = "twitter_cache_improved.json"
+CACHE_DICTION = {}
 try:
     with open(CACHE_FNAME,'r') as cache_file:
         cache_contents = cache_file.read()
         CACHE_DICTION = json.loads(cache_contents)
         
 except:
-    CACHE_DICTION = {}
+    pass
 
 def get_from_twitter_with_cache(baseurl = 'https://api.twitter.com/1.1/statuses/user_timeline.json?', params = {}):
     global CACHE_DICTION
@@ -64,7 +65,8 @@ def get_from_twitter_with_cache(baseurl = 'https://api.twitter.com/1.1/statuses/
             print("New data found!")
             NEW_DICTION = {}
             NEW_DICTION = json.loads(resp.text)
-            NEW_DICTION.append(CACHE_DICTION[:num_tweets - len(resp)])
+            for thing in CACHE_DICTION[ :int(num_tweets) - len(json.loads(resp.text))]:
+                NEW_DICTION.append(thing)
             
             dumped_json_cache = json.dumps(NEW_DICTION, indent = 4)
             fw = open(CACHE_FNAME, "w", encoding = "utf-8")
