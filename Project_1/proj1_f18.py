@@ -1,5 +1,9 @@
 import json
 import requests
+import webbrowser
+import sys
+import codecs
+sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer)
 
 base_itunes_url = "https://itunes.apple.com/search?"
 
@@ -67,13 +71,13 @@ def create_media_types_from_itunes(param1_term = None, param2_term = None):
         for single_request in json_request['results']:
             try:
                 if single_request['kind'] == "song":
-                    returned_medias.append(Song(json = single_request))
+                    returned_medias.append(((Song(json = single_request)), single_request))
                 elif single_request['kind'] == "feature-movie":
-                    returned_medias.append(Movie(json = single_request))
+                    returned_medias.append(((Movie(json = single_request)), single_request))
                 else: # In case its like a music-video or something...
-                    returned_medias.append(Media(json = single_request))
-            except:
-                returned_medias.append(Media(json = single_request))
+                    returned_medias.append(((Media(json = single_request)), single_request))
+            except: # For everything without key 'kind'
+                returned_medias.append(((Media(json = single_request)), single_request))
     except:
         pass
 
@@ -149,9 +153,9 @@ if __name__ == "__main__":
         other_list = []
         if len(master_list) != 0:
             for item in master_list:
-                if type(item) == type(Song()):
+                if type(item[0]) == type(Song()):
                     song_list.append(item)
-                elif type(item) == type(Movie()):
+                elif type(item[0]) == type(Movie()):
                     movie_list.append(item)
                 else:
                     other_list.append(item)
@@ -159,7 +163,7 @@ if __name__ == "__main__":
             if len(song_list) != 0:
                 print("SONGS")
                 for song in song_list:
-                    print(index, song)
+                    print(index, song[0])
                     index += 1
                     indexed_list.append(song)
                 print()
@@ -169,7 +173,7 @@ if __name__ == "__main__":
             if len(movie_list) != 0:
                 print("MOVIES")
                 for movie in movie_list:
-                    print(index, movie)
+                    print(index, movie[0])
                     index += 1
                     indexed_list.append(movie)
                 print()
@@ -179,14 +183,17 @@ if __name__ == "__main__":
             if len(other_list) != 0:
                 print("OTHER MEDIA")
                 for other in other_list:
-                    print(index, other)
+                    print(index, other[0])
                     index += 1
                     indexed_list.append(other)
                 print()
             else:
                 print("No other media types found!"), print()
         
-        print(indexed_list)
         term = input("Enter a number for more info, or another search term, or quit: ")
         
-    pass
+        try:
+            print("Launching", indexed_list[int(term)][1]['collectionViewUrl'], "in web browers...")
+            webbrowser.open(indexed_list[int(term)][1]['collectionViewUrl'])
+        except:
+            pass
