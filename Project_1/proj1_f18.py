@@ -160,6 +160,7 @@ if __name__ == "__main__":
                 else:
                     other_list.append(item)
             
+            print()
             if len(song_list) != 0:
                 print("SONGS")
                 for song in song_list:
@@ -190,10 +191,16 @@ if __name__ == "__main__":
             else:
                 print("No other media types found!"), print()
         
-        term = input("Enter a number for more info, or another search term, or quit: ")
+            term = input("Enter a number for more info, or another search term, or quit: ")
         
-        try:
-            print("Launching", indexed_list[int(term)][1]['collectionViewUrl'], "in web browers...")
-            webbrowser.open(indexed_list[int(term)][1]['collectionViewUrl'])
-        except:
-            pass
+            while True:
+                try:
+                    print("Launching", indexed_list[int(term)][1]['collectionViewUrl'], "in web browers...")
+                    webbrowser.open(indexed_list[int(term)][1]['collectionViewUrl'])
+                    term = input("Enter a number for more info, or another search term, or quit: ")
+                except:
+                    break
+                
+        else:
+            print("No results for this query!")
+            term = input("Enter a search term, or \"quit\" to quit: ")
