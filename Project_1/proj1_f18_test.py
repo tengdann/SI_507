@@ -175,12 +175,12 @@ class TestItunes(unittest.TestCase):
         
         self.assertTrue(len(list1) > 0 and len(list1) <= 10)
         for thing in list1:
-            self.assertEqual(type(thing), type(proj1.Song()))
+            self.assertEqual(type(thing[0]), type(proj1.Song()))
             
         self.assertTrue(len(list2) > 0 and len(list2) <= 10)
-        self.assertEqual(type(list2[2]), type(proj1.Movie()))
+        self.assertEqual(type(list2[2][0]), type(proj1.Movie()))
         
-        self.assertTrue(len(list3) == 0) # Need to figure out what to do when json returns no data
+        self.assertTrue(len(list3) == 0)
         
         self.assertTrue(len(list4) == 0)
         
