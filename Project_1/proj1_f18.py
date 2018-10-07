@@ -76,7 +76,7 @@ def create_media_types_from_itunes(param1_term = None, param2_term = None):
                     returned_medias.append(Movie(json = single_request))
                 else: # In case its like a music-video or something...
                     returned_medias.append(Media(json = single_request))
-            except: # For everything without key 'kind'
+            except: # For everything without key 'kind', or if other shit gets fucked
                 returned_medias.append(Media(json = single_request))
     except:
         pass
