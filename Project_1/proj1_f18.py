@@ -78,6 +78,7 @@ def create_media_types_from_itunes(param1_term = None, param2_term = None):
                     returned_medias.append(Media(json = single_request))
             except: # For everything without key 'kind', or if other shit gets fucked
                 returned_medias.append(Media(json = single_request))
+                print("Oops! Something went wrong, defaulting to media type")
     except:
         pass
 
