@@ -71,13 +71,13 @@ def create_media_types_from_itunes(param1_term = None, param2_term = None):
         for single_request in json_request['results']:
             try:
                 if single_request['kind'] == "song":
-                    returned_medias.append(((Song(json = single_request)), single_request))
+                    returned_medias.append(Song(json = single_request))
                 elif single_request['kind'] == "feature-movie":
-                    returned_medias.append(((Movie(json = single_request)), single_request))
+                    returned_medias.append(Movie(json = single_request))
                 else: # In case its like a music-video or something...
-                    returned_medias.append(((Media(json = single_request)), single_request))
+                    returned_medias.append(Media(json = single_request))
             except: # For everything without key 'kind'
-                returned_medias.append(((Media(json = single_request)), single_request))
+                returned_medias.append(Media(json = single_request))
     except:
         pass
 
@@ -97,6 +97,7 @@ class Media:
                 
             self.author = json["artistName"]
             self.year = json["releaseDate"].split('-')[0]
+            self.url = json["collectionViewUrl"]
         
     def __str__(self):
         return self.title + ' by ' + self.author + ' (%s)' % self.year
@@ -117,6 +118,7 @@ class Song(Media):
             self.album = json["collectionName"]
             self.genre = json["primaryGenreName"]
             self.track_length = json["trackTimeMillis"]
+            self.url = json["collectionViewUrl"]
         
     def __str__(self):
         return super().__str__() + ' [%s]' % self.genre
@@ -135,6 +137,7 @@ class Movie(Media):
             super().__init__(json = json)
             self.rating = json["contentAdvisoryRating"]
             self.movie_length = json["trackTimeMillis"]
+            self.url = json["collectionViewUrl"]
         
     def __str__(self):
         return super().__str__() + ' [%s]' % self.rating
@@ -153,9 +156,9 @@ if __name__ == "__main__":
         other_list = []
         if len(master_list) != 0:
             for item in master_list:
-                if type(item[0]) == type(Song()):
+                if type(item) == type(Song()):
                     song_list.append(item)
-                elif type(item[0]) == type(Movie()):
+                elif type(item) == type(Movie()):
                     movie_list.append(item)
                 else:
                     other_list.append(item)
@@ -164,7 +167,7 @@ if __name__ == "__main__":
             if len(song_list) != 0:
                 print("SONGS")
                 for song in song_list:
-                    print(index, song[0])
+                    print(index, song)
                     index += 1
                     indexed_list.append(song)
                 print()
@@ -174,7 +177,7 @@ if __name__ == "__main__":
             if len(movie_list) != 0:
                 print("MOVIES")
                 for movie in movie_list:
-                    print(index, movie[0])
+                    print(index, movie)
                     index += 1
                     indexed_list.append(movie)
                 print()
@@ -184,7 +187,7 @@ if __name__ == "__main__":
             if len(other_list) != 0:
                 print("OTHER MEDIA")
                 for other in other_list:
-                    print(index, other[0])
+                    print(index, other)
                     index += 1
                     indexed_list.append(other)
                 print()
@@ -195,8 +198,8 @@ if __name__ == "__main__":
         
             while True:
                 try:
-                    print("Launching", indexed_list[int(term) - 1][1]['collectionViewUrl'], "in web browser...")
-                    webbrowser.open(indexed_list[int(term) - 1][1]['collectionViewUrl'])
+                    print("Launching", indexed_list[int(term) - 1].url, "in web browser...")
+                    webbrowser.open(indexed_list[int(term) - 1].url)
                     term = input("Enter a number for more info, or another search term, or quit: ")
                 except:
                     break
