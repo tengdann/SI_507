@@ -183,5 +183,6 @@ class TestItunes(unittest.TestCase):
         self.assertTrue(len(list3) == 0)
         
         self.assertTrue(len(list4) == 0)
+        self.assertEqual(type(proj1.Song()), type(proj1.Media())) 
         
 unittest.main(verbosity = 2)
