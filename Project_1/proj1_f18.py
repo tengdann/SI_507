@@ -198,7 +198,11 @@ if __name__ == "__main__":
         
             while True:
                 try:
-                    print("Launching", indexed_list[int(term) - 1].url, "in web browser...")
+                    while int(term) > len(indexed_list):
+                        print("Sorry, that is out of range!"), print()
+                        term = input("Enter a number for more info, or another search term, or quit: ")
+                    
+                    print("Launching", indexed_list[int(term) - 1].url, "in web browser..."), print()
                     webbrowser.open(indexed_list[int(term) - 1].url)
                     term = input("Enter a number for more info, or another search term, or quit: ")
                 except:
