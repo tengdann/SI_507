@@ -97,7 +97,10 @@ class Media:
                 
             self.author = json["artistName"]
             self.year = json["releaseDate"].split('-')[0]
-            self.url = json["collectionViewUrl"]
+            try:
+                self.url = json["trackViewUrl"]
+            except:
+                self.url = json["collectionViewUrl"]
         
     def __str__(self):
         return self.title + ' by ' + self.author + ' (%s)' % self.year
@@ -118,7 +121,6 @@ class Song(Media):
             self.album = json["collectionName"]
             self.genre = json["primaryGenreName"]
             self.track_length = json["trackTimeMillis"]
-            self.url = json["collectionViewUrl"]
         
     def __str__(self):
         return super().__str__() + ' [%s]' % self.genre
@@ -137,7 +139,6 @@ class Movie(Media):
             super().__init__(json = json)
             self.rating = json["contentAdvisoryRating"]
             self.movie_length = json["trackTimeMillis"]
-            self.url = json["collectionViewUrl"]
         
     def __str__(self):
         return super().__str__() + ' [%s]' % self.rating
