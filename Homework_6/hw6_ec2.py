@@ -2,6 +2,7 @@
 import requests
 import sys
 import codecs
+import spynner
 from bs4 import BeautifulSoup
 sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer)
 
