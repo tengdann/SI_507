@@ -9,6 +9,7 @@ header = {'User-Agent': 'SI_CLASS'}
 umsi_titles = {}
 
 CACHE_FNAME = 'cache.json'
+DICT_FNAME = 'directory_dict.json'
 try:
     cache_file = open(CACHE_FNAME, 'r')
     cache_contents = cache_file.read()
@@ -64,5 +65,10 @@ dumped_json_cache = json.dumps(CACHE_DICTION)
 fw = open(CACHE_FNAME,"w")
 fw.write(dumped_json_cache)
 fw.close() # Close the open file
+
+dumped_json_cache = json.dumps(umsi_titles)
+fw = open(DICT_FNAME, 'w')
+fw.write(dumped_json_cache)
+fw.close()
 
 #### Write out file here #####
