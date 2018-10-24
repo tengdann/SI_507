@@ -48,7 +48,7 @@ def make_request_using_cache(url, header):
     ## if not, fetch the data afresh, add it to the cache,
     ## then write the cache to file
     else:
-        print("Making a request for new data...")
+        # print("Making a request for new data...")
         # Make the request and cache the new data
         resp = requests.get(url, headers=header)
         CACHE_DICTION[unique_ident] = resp.text
