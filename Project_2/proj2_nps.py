@@ -1,7 +1,13 @@
 ## proj_nps.py
 ## Skeleton for Project 2, Fall 2018
 ## ~~~ modify this file, but don't rename it ~~~
+import requests
+import requests_cache
 from secrets import google_places_key
+
+baseurl = 'https://www.nps.gov'
+index_url =  baseurl + '/index.htm'
+requests_cache.install_cache('nps_cache')
 
 ## you can, and should add to and modify this class any way you see fit
 ## you can add attributes and modify the __init__ parameters,
@@ -20,6 +26,10 @@ class NationalSite():
         self.address_city = 'Smallville'
         self.address_state = 'KS'
         self.address_zip = '11111'
+        
+    def __str__(self):
+        string = '%s (%s): %s, %s, %s, %s' % (self.name, self.type, self.address_street, self.address_city, self.address_state, self.address_zip)
+        return string
 
 ## you can, and should add to and modify this class any way you see fit
 ## you can add attributes and modify the __init__ parameters,
@@ -37,6 +47,7 @@ class NearbyPlace():
 ##        (e.g., National Parks, National Heritage Sites, etc.) that are listed
 ##        for the state at nps.gov
 def get_sites_for_state(state_abbr):
+    state_url = baseurl + '/state/%s/index.htm' % (lower(state_abbr))
     return []
 
 
