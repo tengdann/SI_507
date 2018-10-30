@@ -3,6 +3,7 @@
 ## ~~~ modify this file, but don't rename it ~~~
 import requests
 import requests_cache
+from bs4 import BeautifulSoup
 from secrets import google_places_key
 
 baseurl = 'https://www.nps.gov'
@@ -16,16 +17,19 @@ requests_cache.install_cache('nps_cache')
 ## the starter code is here just to make the tests run (and fail)
 class NationalSite():
     def __init__(self, type, name, desc, url=None):
-        self.type = type
+        if type != '':
+            self.type = type
+        else:
+            self.type = "No type found!"
         self.name = name
         self.description = desc
         self.url = url
 
-        # needs to be changed, obvi.
-        self.address_street = '123 Main St.'
-        self.address_city = 'Smallville'
-        self.address_state = 'KS'
-        self.address_zip = '11111'
+        park_soup = BeautifulSoup(requests.get(url).text, 'html.parser')
+        self.address_street = park_soup.find('span', itemprop = 'streetAddress').text.split('\n')[1]
+        self.address_city = park_soup.find('span', itemprop = 'addressLocality').text
+        self.address_state = park_soup.find('span', itemprop = 'addressRegion').text
+        self.address_zip = park_soup.find('span', itemprop = 'postalCode').text
         
     def __str__(self):
         string = '%s (%s): %s, %s, %s, %s' % (self.name, self.type, self.address_street, self.address_city, self.address_state, self.address_zip)
@@ -47,8 +51,19 @@ class NearbyPlace():
 ##        (e.g., National Parks, National Heritage Sites, etc.) that are listed
 ##        for the state at nps.gov
 def get_sites_for_state(state_abbr):
-    state_url = baseurl + '/state/%s/index.htm' % (lower(state_abbr))
-    return []
+    list_sites
+    state_url = baseurl + '/state/%s/index.htm' % (state_abbr.lower())
+    page_soup = BeautifulSoup(requests.get(state_url).text, 'html.parser')
+    
+    list_parks = page_soup.find_all('li', class_ = 'clearfix')
+    for park in list_parks[:-1]:
+        name = park.find('a').text
+        type = park.find('h2').text
+        desc = park.find('p').text[1:-1]
+        park_url = baseurl + park.find('a')['href'] + 'planyourvisit/basicinfo.htm'
+        list_sites.append(NationalSite(type, name, desc, park_url))
+    
+    return list_sites
 
 
 ## Must return the list of NearbyPlaces for the specifite NationalSite
