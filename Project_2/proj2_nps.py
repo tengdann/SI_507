@@ -17,7 +17,7 @@ requests_cache.install_cache('nps_cache')
 ##
 ## the starter code is here just to make the tests run (and fail)
 class NationalSite():
-    def __init__(self, type, name, desc, url=None):
+    def __init__(self, type, name, desc, state=None, url=None):
         if type != '':
             self.type = type
         else:
@@ -25,12 +25,31 @@ class NationalSite():
         self.name = name
         self.description = desc
         self.url = url
-
-        park_soup = BeautifulSoup(requests.get(url).text, 'html.parser')
-        self.address_street = park_soup.find('span', itemprop = 'streetAddress').text.split('\n')[1]
-        self.address_city = park_soup.find('span', itemprop = 'addressLocality').text
-        self.address_state = park_soup.find('span', itemprop = 'addressRegion').text
-        self.address_zip = park_soup.find('span', itemprop = 'postalCode').text[:-5]
+        
+        if url is not None:
+            park_text = requests.get(url).text
+            park_soup = BeautifulSoup(park_text, 'html.parser')
+            
+            try:
+                self.address_street = park_soup.find('span', itemprop = 'streetAddress').text.split('\n')[1]
+            except:
+                self.address_street = "No street address found!"
+                
+            try:
+                self.address_city = park_soup.find('span', itemprop = 'addressLocality').text
+            except:
+                self.address_city = "No city found!"
+                
+            try:
+                self.address_state = park_soup.find('span', itemprop = 'addressRegion').text
+            except:
+                self.address_state = state
+                
+            try:
+                self.address_zip = park_soup.find('span', itemprop = 'postalCode').text[:-5]
+            except:
+                self.address_zip = "No zip code found!"
+            
         
     def __str__(self):
         string = '%s (%s): %s, %s, %s %s' % (self.name, self.type, self.address_street, self.address_city, self.address_state, self.address_zip)
@@ -62,7 +81,7 @@ def get_sites_for_state(state_abbr):
         type = park.find('h2').text
         desc = park.find('p').text[1:-1]
         park_url = npsurl + park.find('a')['href'] + 'planyourvisit/basicinfo.htm'
-        list_sites.append(NationalSite(type, name, desc, park_url))
+        list_sites.append(NationalSite(type, name, desc, state_abbr.upper(), park_url))
     
     return list_sites
 
@@ -74,7 +93,22 @@ def get_sites_for_state(state_abbr):
 ##          return an empty list
 def get_nearby_places_for_site(national_site):
     search_query = national_site.name + national_site.type
+    search_url = googleurl + "findplacefromtext/json?input=%s&inputtype=textquery&fields=geometry,name&key=%s" % (search_query.replace(' ', '%20'), google_places_key)
+    search_result = requests.get(search_url).json()
+    search_names = get_google_api_names(search_result)
+    if len(search_result['candidates']) != 0:
+        if any(national_site.name in name for name in search_names):
+            lat = search_result['candidates'][0]['geometry']['location']['lat']
+            lon = search_result['candidates'][0]['geometry']['location']['lng']
+            
+            print(lat, ' ', lon)
     return []
+    
+def get_google_api_names(results):
+    search_names = []
+    for result in results['candidates']:
+        search_names.append(result['name'])
+    return search_names
 
 ## Must plot all of the NationalSites listed for the state on nps.gov
 ## Note that some NationalSites might actually be located outside the state.
@@ -92,3 +126,5 @@ def plot_sites_for_state(state_abbr):
 ## side effects: launches a plotly page in the web browser
 def plot_nearby_for_site(site_object):
     pass
+    
+test_list = get_sites_for_state('ak')  
