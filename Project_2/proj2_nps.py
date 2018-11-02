@@ -21,7 +21,7 @@ class NationalSite():
         if type != '':
             self.type = type
         else:
-            self.type = "No type found!"
+            self.type = ''
         self.name = name
         self.description = desc
         self.url = url
@@ -63,6 +63,10 @@ class NationalSite():
 class NearbyPlace():
     def __init__(self, name):
         self.name = name
+        
+    def __str__(self):
+        string = '%s' % (self.name)
+        return string
 
 ## Must return the list of NationalSites for the specified state
 ## param: the 2-letter state abbreviation, lowercase
@@ -92,23 +96,29 @@ def get_sites_for_state(state_abbr):
 ##          if the site is not found by a Google Places search, this should
 ##          return an empty list
 def get_nearby_places_for_site(national_site):
-    search_query = national_site.name + national_site.type
+    search_query = national_site.name + ' ' + national_site.type
     search_url = googleurl + "findplacefromtext/json?input=%s&inputtype=textquery&fields=geometry,name&key=%s" % (search_query.replace(' ', '%20'), google_places_key)
     search_result = requests.get(search_url).json()
-    search_names = get_google_api_names(search_result)
-    if len(search_result['candidates']) != 0:
-        if any(national_site.name in name for name in search_names):
-            lat = search_result['candidates'][0]['geometry']['location']['lat']
-            lon = search_result['candidates'][0]['geometry']['location']['lng']
-            
-            print(lat, ' ', lon)
-    return []
     
-def get_google_api_names(results):
-    search_names = []
-    for result in results['candidates']:
-        search_names.append(result['name'])
-    return search_names
+    if len(search_result['candidates']) != 0:
+        lat = search_result['candidates'][0]['geometry']['location']['lat']
+        lon = search_result['candidates'][0]['geometry']['location']['lng']
+    
+    nearby_url = googleurl + "nearbysearch/json?location=%s,%s&radius=10000&key=%s" % (lat, lon, google_places_key)
+    nearby_results = requests.get(nearby_url).json()
+    nearby_names = get_nearby_names(nearby_results)
+    nearby_places = []
+    
+    for nearby_name in nearby_names:
+        if national_site.name not in nearby_name:
+            nearby_places.append(NearbyPlace(nearby_name))
+    return nearby_places
+    
+def get_nearby_names(results):
+    names = []
+    for result in results['results']:
+        names.append(result['name'])
+    return names
 
 ## Must plot all of the NationalSites listed for the state on nps.gov
 ## Note that some NationalSites might actually be located outside the state.
@@ -126,5 +136,3 @@ def plot_sites_for_state(state_abbr):
 ## side effects: launches a plotly page in the web browser
 def plot_nearby_for_site(site_object):
     pass
-    
-test_list = get_sites_for_state('ak')  

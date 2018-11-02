@@ -1,5 +1,6 @@
 itunes_cache.json
 secret_data.py
+secrets.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
