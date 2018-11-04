@@ -62,8 +62,10 @@ class NationalSite():
 ##
 ## the starter code is here just to make the tests run (and fail)
 class NearbyPlace():
-    def __init__(self, name):
+    def __init__(self, name, lat, lon):
         self.name = name
+        self.lat = lat
+        self.lon = lon
         
     def __str__(self):
         string = '%s' % (self.name)
@@ -107,24 +109,12 @@ def get_nearby_places_for_site(national_site):
     
     nearby_url = googleurl + "nearbysearch/json?location=%s,%s&radius=10000&key=%s" % (lat, lon, google_places_key)
     nearby_results = requests.get(nearby_url).json()
-    nearby_names = get_nearby_names(nearby_results)
     nearby_places = []
     
-    for nearby_name in nearby_names:
-        if national_site.name not in nearby_name:
-            nearby_places.append(NearbyPlace(nearby_name))
+    for nearby_site in nearby_results['results']:
+        if national_site.name not in nearby_site['name']:
+            nearby_places.append(NearbyPlace(nearby_site['name'], nearby_site['geometry']['location']['lat'], nearby_site['geometry']['location']['lng']))
     return nearby_places
-
-## Must return the list of names of NearbyPlaces for the specifite NationalSite
-## param: list of NearbyPlaces
-## returns: a list names of NearbyPlaces within 10km of the given site
-##          if the site is not found by a Google Places search, this should
-##          return an empty list   
-def get_nearby_names(results):
-    names = []
-    for result in results['results']:
-        names.append(result['name'])
-    return names
 
 ## Must plot all of the NationalSites listed for the state on nps.gov
 ## Note that some NationalSites might actually be located outside the state.
@@ -179,7 +169,6 @@ def plot_sites_for_state(state_abbr):
     
     layout = dict(
             title = 'Plots of National Sites in %s' % (state_abbr.upper()),
-            colorbar = True,
             geo = dict (
                 scope = 'usa',
                 projection = dict(type = 'albers usa'),
@@ -206,4 +195,128 @@ def plot_sites_for_state(state_abbr):
 ## returns: nothing
 ## side effects: launches a plotly page in the web browser
 def plot_nearby_for_site(site_object):
-    pass   
+    nearby_sites = get_nearby_places_for_site(site_object)
+    
+    search_query = site_object.name + ' ' + site_object.type
+    search_url = googleurl + "findplacefromtext/json?input=%s&inputtype=textquery&fields=geometry,name&key=%s" % (search_query.replace(' ', '%20'), google_places_key)
+    search_result = requests.get(search_url).json()
+    
+    if len(search_result['candidates']) != 0:
+        try:
+            site_lat = search_result['candidates'][0]['geometry']['location']['lat']
+            site_lon = search_result['candidates'][0]['geometry']['location']['lng']
+        except:
+            print("Could not find the site!")
+            return
+        
+    nearby_coords = []
+    for nearby_site in nearby_sites:
+        try:
+            nearby_coords.append((nearby_site.lat, nearby_site.lon, nearby_site.name))
+        except:
+            pass
+    
+    nearby_lats = [coord[0] for coord in nearby_coords]
+    nearby_lons = [coord[1] for coord in nearby_coords]
+    
+    trace1 = dict(
+            type = 'scattergeo',
+            locationmode = 'USA-states',
+            lat = site_lat,
+            lon = site_lon,
+            text = site_object.name,
+            mode = 'markers',
+            marker = dict(
+                size = 15,
+                symbol = 'star',
+                color = 'purple'
+            )    
+        )
+    
+    trace2 = dict(
+            type = 'scattergeo',
+            locationmode = 'USA-states',
+            lat = nearby_lats,
+            lon = nearby_lons,
+            text = [coord[2] for coord in nearby_coords],
+            mode = 'markers',
+            marker = dict(
+                size = 8,
+                symbol = 'circle',
+                color = 'red'
+            )
+        )
+    
+    lats = [site_lat] + nearby_lats
+    lons = [site_lon] + nearby_lons
+    
+    min_lat = min(lats)
+    max_lat = max(lats)
+    min_lon = min(lons)
+    max_lon = max(lons)
+
+    lat_axis = [min_lat - 1, max_lat + 1]
+    lon_axis = [min_lon - 1, max_lon + 1]
+
+    center_lat = (min_lat + max_lat) / 2
+    center_lon = (min_lon + max_lon) / 2
+    
+    layout = dict(
+            title = 'Plots of Nearby Sites for %s' % (site_object.name),
+            geo = dict (
+                scope = 'usa',
+                projection = dict(type = 'albers usa'),
+                showland = True,
+                showlakes = True,
+                showocean = True,
+                landcolor = '#ffffba',
+                lakecolor = '#add8e6',
+                oceancolor = '#add8e6',
+                lataxis = {'range': lat_axis},
+                lonaxis = {'range': lon_axis},
+                center = {'lat': center_lat, 'lon': center_lon},
+                countrywidth = 3,
+                subunitwidth = 3
+            )
+        )
+    
+    data = [trace1, trace2]
+    
+    fig = dict(data = data, layout = layout)
+    py.plot(fig, validate = False, filename = '%s - Nearby Sites' % (site_object.name))
+
+help_str = """list <stateabbr>
+    available anytime
+    lists all National Sites in a state
+    valid inputs: a two-letter state abbreviation
+nearby <result_number>
+    available only if there is an active result set
+    lists all Places nearby a given result
+    valid inputs: an integer 1-len(result_set_size)
+map
+    available only if there is an active result set
+    displays the current results on a map
+exit
+    exits the program
+help
+    lists available commands (these instructions)"""
+    
+if __name__ == '__main__':
+    result_set = []
+    user_input = input('Please enter your choice! Type \'help\' for help (duh...), or \'exit\' to quit: ')
+    while user_input.lower() != 'exit':
+        if user_input.lower().split(' ')[0] == 'help':
+            print(help_str)
+        elif user_input.lower().split(' ')[0] == 'list':
+        elif user_input.lower().split(' ')[0] == 'nearby':
+            if len(result_set) == 0:
+                print('No active result set; please use list <stateabbr> to create one!')
+            else:
+                pass
+        elif user_input.lower().split(' ')[0] == 'map':
+            if len(result_set) == 0:
+                print('No active result set; please use list <stateabbr> to create one!')
+            else:
+                pass
+        
+        user_input = input('Please enter your choice! Type \'help\' for help (duh...), or \'exit\' to quit: ')
