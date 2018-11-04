@@ -299,24 +299,40 @@ map
 exit
     exits the program
 help
-    lists available commands (these instructions)"""
+    lists available commands (these instructions)
+"""
     
 if __name__ == '__main__':
     result_set = []
+    active_state = ''
     user_input = input('Please enter your choice! Type \'help\' for help (duh...), or \'exit\' to quit: ')
-    while user_input.lower() != 'exit':
-        if user_input.lower().split(' ')[0] == 'help':
+    sanitized_input = user_input.lower().split(' ')
+    while sanitized_input[0] != 'exit':
+        if sanitized_input[0] == 'help':
+            print()
             print(help_str)
-        elif user_input.lower().split(' ')[0] == 'list':
-        elif user_input.lower().split(' ')[0] == 'nearby':
+        elif sanitized_input[0] == 'list':
+            print()
+            result_set = get_sites_for_state(sanitized_input[1])
+            active_state = sanitized_input[1]
+            for result in result_set:
+                print(result_set.index(result) + 1, ' ', str(result))
+            print()
+        elif sanitized_input[0] == 'nearby':
             if len(result_set) == 0:
                 print('No active result set; please use list <stateabbr> to create one!')
+                print()
             else:
-                pass
-        elif user_input.lower().split(' ')[0] == 'map':
+                nearby_sites = get_nearby_places_for_site(result_set[int(sanitized_input[1]) - 1])
+                for nearby_site in nearby_sites:
+                    print(str(nearby_site))
+                print()
+        elif sanitized_input[0] == 'map':    
             if len(result_set) == 0:
                 print('No active result set; please use list <stateabbr> to create one!')
+                print()
             else:
-                pass
+                plot_sites_for_state(active_state)
         
         user_input = input('Please enter your choice! Type \'help\' for help (duh...), or \'exit\' to quit: ')
+        sanitized_input = user_input.lower().split(' ')
