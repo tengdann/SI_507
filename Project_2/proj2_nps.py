@@ -7,6 +7,66 @@ from bs4 import BeautifulSoup
 from secrets import google_places_key
 import plotly.plotly as py
 
+states = {
+        'AK': 'Alaska',
+        'AL': 'Alabama',
+        'AR': 'Arkansas',
+        'AS': 'American Samoa',
+        'AZ': 'Arizona',
+        'CA': 'California',
+        'CO': 'Colorado',
+        'CT': 'Connecticut',
+        'DC': 'District of Columbia',
+        'DE': 'Delaware',
+        'FL': 'Florida',
+        'GA': 'Georgia',
+        'GU': 'Guam',
+        'HI': 'Hawaii',
+        'IA': 'Iowa',
+        'ID': 'Idaho',
+        'IL': 'Illinois',
+        'IN': 'Indiana',
+        'KS': 'Kansas',
+        'KY': 'Kentucky',
+        'LA': 'Louisiana',
+        'MA': 'Massachusetts',
+        'MD': 'Maryland',
+        'ME': 'Maine',
+        'MI': 'Michigan',
+        'MN': 'Minnesota',
+        'MO': 'Missouri',
+        'MP': 'Northern Mariana Islands',
+        'MS': 'Mississippi',
+        'MT': 'Montana',
+        'NA': 'National',
+        'NC': 'North Carolina',
+        'ND': 'North Dakota',
+        'NE': 'Nebraska',
+        'NH': 'New Hampshire',
+        'NJ': 'New Jersey',
+        'NM': 'New Mexico',
+        'NV': 'Nevada',
+        'NY': 'New York',
+        'OH': 'Ohio',
+        'OK': 'Oklahoma',
+        'OR': 'Oregon',
+        'PA': 'Pennsylvania',
+        'PR': 'Puerto Rico',
+        'RI': 'Rhode Island',
+        'SC': 'South Carolina',
+        'SD': 'South Dakota',
+        'TN': 'Tennessee',
+        'TX': 'Texas',
+        'UT': 'Utah',
+        'VA': 'Virginia',
+        'VI': 'Virgin Islands',
+        'VT': 'Vermont',
+        'WA': 'Washington',
+        'WI': 'Wisconsin',
+        'WV': 'West Virginia',
+        'WY': 'Wyoming'
+}
+
 npsurl = 'https://www.nps.gov'
 index_url =  npsurl + '/index.htm'
 googleurl = 'https://maps.googleapis.com/maps/api/place/'
@@ -175,9 +235,6 @@ def plot_sites_for_state(state_abbr):
                 showland = True,
                 showlakes = True,
                 showocean = True,
-                landcolor = '#ffffba',
-                lakecolor = '#add8e6',
-                oceancolor = '#add8e6',
                 lataxis = {'range': lat_axis},
                 lonaxis = {'range': lon_axis},
                 center = {'lat': center_lat, 'lon': center_lon},
@@ -222,9 +279,9 @@ def plot_nearby_for_site(site_object):
     trace1 = dict(
             type = 'scattergeo',
             locationmode = 'USA-states',
-            lat = site_lat,
-            lon = site_lon,
-            text = site_object.name,
+            lat = [site_lat],
+            lon = [site_lon],
+            text = [site_object.name],
             mode = 'markers',
             marker = dict(
                 size = 15,
@@ -269,9 +326,6 @@ def plot_nearby_for_site(site_object):
                 showland = True,
                 showlakes = True,
                 showocean = True,
-                landcolor = '#ffffba',
-                lakecolor = '#add8e6',
-                oceancolor = '#add8e6',
                 lataxis = {'range': lat_axis},
                 lonaxis = {'range': lon_axis},
                 center = {'lat': center_lat, 'lon': center_lon},
@@ -305,18 +359,18 @@ help
 if __name__ == '__main__':
     result_set = []
     active_state = ''
-    user_input = input('Please enter your choice! Type \'help\' for help (duh...), or \'exit\' to quit: ')
+    user_input = input('Please enter your command! Type \'help\' for help (duh...), or \'exit\' to quit: ')
     sanitized_input = user_input.lower().split(' ')
     while sanitized_input[0] != 'exit':
         if sanitized_input[0] == 'help':
             print()
             print(help_str)
         elif sanitized_input[0] == 'list':
-            print()
+            print('\nNational Sites in %s:' % (states[sanitized_input[1].upper()]))
             result_set = get_sites_for_state(sanitized_input[1])
             active_state = sanitized_input[1]
             for result in result_set:
-                print(result_set.index(result) + 1, ' ', str(result))
+                print('\t', result_set.index(result) + 1, ' ', str(result))
             print()
         elif sanitized_input[0] == 'nearby':
             if len(result_set) == 0:
@@ -324,8 +378,9 @@ if __name__ == '__main__':
                 print()
             else:
                 nearby_sites = get_nearby_places_for_site(result_set[int(sanitized_input[1]) - 1])
+                print('\nPlaces near', result_set[int(sanitized_input[1]) - 1].name, result_set[int(sanitized_input[1]) - 1].type)
                 for nearby_site in nearby_sites:
-                    print(str(nearby_site))
+                    print('\t', nearby_sites.index(nearby_site) + 1, ' ', str(nearby_site))
                 print()
         elif sanitized_input[0] == 'map':    
             if len(result_set) == 0:
@@ -333,6 +388,10 @@ if __name__ == '__main__':
                 print()
             else:
                 plot_sites_for_state(active_state)
+        else:
+            print('Invalid input, please try again.')
         
         user_input = input('Please enter your choice! Type \'help\' for help (duh...), or \'exit\' to quit: ')
         sanitized_input = user_input.lower().split(' ')
+        
+    print('Thank you for using proj2_nps.py, please come again!')
