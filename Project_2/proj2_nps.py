@@ -366,26 +366,37 @@ if __name__ == '__main__':
             print()
             print(help_str)
         elif sanitized_input[0] == 'list':
-            print('\nNational Sites in %s:' % (states[sanitized_input[1].upper()]))
-            result_set = get_sites_for_state(sanitized_input[1])
-            active_state = sanitized_input[1]
-            for result in result_set:
-                print('\t', result_set.index(result) + 1, ' ', str(result))
+            try:
+                print('\nNational Sites in %s:' % (states[sanitized_input[1].upper()]))
+                result_set = get_sites_for_state(sanitized_input[1])
+                active_state = sanitized_input[1]
+                
+                for result in result_set:
+                    print('\t', result_set.index(result) + 1, ' ', str(result))
+            except:
+                print('You need to specify a state!')
             print()
         elif sanitized_input[0] == 'nearby':
             if len(result_set) == 0:
                 print('No active result set; please use list <stateabbr> to create one!')
                 print()
             else:
-                nearby_sites = get_nearby_places_for_site(result_set[int(sanitized_input[1]) - 1])
-                print('\nPlaces near', result_set[int(sanitized_input[1]) - 1].name, result_set[int(sanitized_input[1]) - 1].type)
-                for nearby_site in nearby_sites:
-                    print('\t', nearby_sites.index(nearby_site) + 1, ' ', str(nearby_site))
+                try:
+                    nearby_sites = get_nearby_places_for_site(result_set[int(sanitized_input[1]) - 1])
+                    print('\nPlaces near', result_set[int(sanitized_input[1]) - 1].name, result_set[int(sanitized_input[1]) - 1].type)
+                    result_set = [result_set[int(sanitized_input[1]) - 1]]
+                    
+                    for nearby_site in nearby_sites:
+                        print('\t', nearby_sites.index(nearby_site) + 1, ' ', str(nearby_site))
+                except:
+                    print('You need to specify a site!')
                 print()
         elif sanitized_input[0] == 'map':    
             if len(result_set) == 0:
                 print('No active result set; please use list <stateabbr> to create one!')
                 print()
+            elif len(result_set) == 1:
+                plot_nearby_for_site(result_set[0])
             else:
                 plot_sites_for_state(active_state)
         else:
