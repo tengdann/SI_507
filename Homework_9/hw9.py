@@ -47,7 +47,6 @@ def question4():
     prod = cur.fetchmany(5)
     return prod
     
-print('\nFIGURE OUT STRING FORMATTING\n')
 prod = question4()
 print()
 for r in prod:
@@ -75,8 +74,10 @@ def question6():
     return stock
     
 stock = question6()
+print()
 for row in stock:
     print('{:.<47}{}'.format(row[1], row[6]))
+print()
 
 #----- Q7. Show all column names in the Order table 
 print('-'*20 + "Question 7" + '-'*20)
@@ -94,7 +95,7 @@ print()
 #----- Q8. Show the names of all customers who lives in USA and have a fax number on record.
 print('-'*20 + "Question 8" + '-'*20)
 def question8():
-    cur.execute('SELECT CompanyName FROM Customer WHERE Country = \'USA\' AND Fax <> \'\'')
+    cur.execute('SELECT ContactName FROM Customer WHERE Country = \'USA\' AND Fax <> \'\'')
     cust = cur.fetchall()
     return cust
 
