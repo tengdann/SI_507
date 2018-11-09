@@ -3,6 +3,7 @@ SI 507 F18 homework 9: Basic SQL statements
 '''
 
 import sqlite3 as sqlite
+import datetime
 
 conn = sqlite.connect('Northwind_small.sqlite')
 cur = conn.cursor()
@@ -131,4 +132,26 @@ for id in ids:
     print(id[0])
 print()
 
+print('-'*20 + "Extra Credit 1" + '-'*20)
+def ec1():
+    cur.execute('SELECT CustomerId, OrderDate FROM [Order] ORDER BY CustomerId')
+    orders = cur.fetchall()
+    new_orders = []
+    for order in orders:
+        date = order[1].split('-')
+        lst = list(order)
+        lst[1] = datetime.date(int(date[0]), int(date[1]), int(date[2]))
+        order = tuple(lst)
+        new_orders.append(order)
+    return new_orders
 
+print()
+orders = ec1()
+print('{:^13}{:^13}{:^23}{:^15}'.format('CustomerID', 'Order date', 'Previous order date', 'Days passed'))
+for i in range(len(orders) - 1):
+    if orders[i][0] == orders[i + 1][0]:
+        print('{:^13}{:^13}{:^23}{:^15}'.format(orders[i][0], str(orders[i + 1][1]), str(orders[i][1]), (orders[i + 1][1] - orders[i][1]).days))
+    else:
+        pass
+
+conn.close()        
