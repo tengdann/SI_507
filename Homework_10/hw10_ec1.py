@@ -93,6 +93,9 @@ def check_teams_for_network(network_name):
     
     for team in sorted(teams):
         print(team)
+        
+    conn.commit()
+    conn.close()
        
 
 if __name__ == '__main__':
