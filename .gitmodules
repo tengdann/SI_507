@@ -1,3 +1,6 @@
 [submodule "F2018-507-Project3"]
 	path = F2018-507-Project3
 	url = git@github.com:tengdann/F2018-507-Project3.git
+[submodule "Project_3"]
+	path = Project_3
+	url = git@github.com:tengdann/F2018-507-Project3.git
