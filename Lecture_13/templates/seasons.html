@@ -1,0 +1,21 @@
+
+<link rel="stylesheet" href="/static/style.css">
+
+<h1> Michigan Men's Basketball </h1>
+
+<table border=1>
+    <tr>
+        <th>Year</th>
+        <th>Wins</th>
+        <th>Losses</th>
+        <th>Win %</th>
+    </tr>
+{% for s in seasons %}
+    <tr>
+        <td>{{s[1]}}</td>
+        <td>{{s[3]}}</td>
+        <td>{{s[4]}}</td>
+        <td>{{s[5]}}</td>
+    </tr>
+{% endfor %}
+</table>
