@@ -1,0 +1,23 @@
+body {
+    background-color: rgb(220, 222, 200);
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.entry {
+    border-width: 1px;
+    border-color: white;
+    border-style: solid;
+    width: 600px;
+}
+
+.entrytext {
+    font-family: cursive;
+    font-style: oblique;
+    font-size: 16;
+}
+
+.metadata {
+    font-family: monospace;
+    font-size: 12;
+    padding-left: 30;
+}
