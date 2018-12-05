@@ -6,14 +6,14 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     ## print the guestbook
-    return render_template("index.html", entries=model.get_entries())
+    return render_template("index.html", entries = model.get_entries())
 
 @app.route("/add")
 def addentry():
     ## add a guestbook entry
     return render_template("addentry.html")
 
-@app.route("/postentry", methods=["POST"])
+@app.route("/postentry", methods = ["POST"])
 def postentry():
     name = request.form["name"]
     message = request.form["message"]
@@ -22,9 +22,9 @@ def postentry():
 
 @app.route("/admin")
 def admin():
-    return render_template("admin.html", entries=model.get_entries())
+    return render_template("admin.html", entries = model.get_entries())
     
-@app.route("/delete")
+@app.route("/delete", methods = ["POST"])
 def delete():
     id = request.form['id']
     model.delete_entry(id)
